@@ -47,19 +47,37 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({ onClose }) => {
       return;
     }
 
-    addExpense({
+    // Prepare the expense object
+    const newExpense = {
       title: title.trim(),
       amount: parseFloat(amount),
       category,
       date,
       notes: notes.trim(),
       currency: currentCurrency.code,
-      transactionType,
-      contact,
-      sendEmailReminder,
-      sendSmsReminder,
-      reminderDate,
-    });
+      transactionType, // Always include transaction type
+      contact:
+        transactionType === "give" || transactionType === "borrow"
+          ? contact
+          : undefined, // Only include contact for give/borrow
+      sendEmailReminder:
+        transactionType === "give" || transactionType === "borrow"
+          ? sendEmailReminder
+          : undefined, // Only include reminder preferences for give/borrow
+      sendSmsReminder:
+        transactionType === "give" || transactionType === "borrow"
+          ? sendSmsReminder
+          : undefined,
+      // Only include reminderDate if it's a give/borrow transaction AND a reminder is set
+      reminderDate:
+        (transactionType === "give" || transactionType === "borrow") &&
+        (sendEmailReminder || sendSmsReminder) &&
+        reminderDate
+          ? reminderDate
+          : undefined,
+    };
+
+    addExpense(newExpense);
 
     onClose();
   };
