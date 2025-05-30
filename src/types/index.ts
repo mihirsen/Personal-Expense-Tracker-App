@@ -7,19 +7,24 @@ export interface Expense {
   date: string;
   notes?: string;
   created_at: string;
+  transactionType?: "expense" | "give" | "borrow";
+  contact?: string;
+  sendEmailReminder?: boolean;
+  sendSmsReminder?: boolean;
+  reminderDate?: string;
 }
 
-export type CategoryType = 
-  | 'food' 
-  | 'transport' 
-  | 'entertainment' 
-  | 'bills' 
-  | 'shopping' 
-  | 'health' 
-  | 'other';
+export type CategoryType =
+  | "food"
+  | "transport"
+  | "entertainment"
+  | "bills"
+  | "shopping"
+  | "health"
+  | "other";
 
 export interface CategoryOption {
-  value: CategoryType | 'all';
+  value: CategoryType | "all";
   label: string;
   color: string;
 }

@@ -9,6 +9,7 @@ import { useState } from "react";
 import FilterBar from "./components/FilterBar";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./components/AuthPage";
+import Footer from "./components/Footer";
 
 function App() {
   const { isDarkMode } = useTheme();
@@ -88,6 +89,7 @@ function App() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

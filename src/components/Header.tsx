@@ -1,12 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { DollarSign, Moon, Sun } from "lucide-react";
+import { DollarSign, Moon, Sun, Download } from "lucide-react";
 import CurrencySelector from "./CurrencySelector";
 import { useAuth } from "../context/AuthContext";
 
 const Header: React.FC = () => {
   const { isDarkMode, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
+
+  // State to store the deferred prompt event and control button visibility
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  useEffect(() => {
+    // Listen for the beforeinstallprompt event
+    const handler = (e: Event) => {
+      e.preventDefault(); // Prevent the default browser prompt
+      setDeferredPrompt(e); // Store the event
+      setShowInstallButton(true); // Show the install button
+    };
+
+    window.addEventListener("beforeinstallprompt", handler);
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      return;
+    }
+    // Show the install prompt
+    deferredPrompt.prompt();
+
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+
+    // We no longer need the prompt. Clear it.
+    setDeferredPrompt(null);
+    setShowInstallButton(false);
+
+    if (outcome === "accepted") {
+      console.log("User accepted the install prompt.");
+    } else if (outcome === "dismissed") {
+      console.log("User dismissed the install prompt.");
+    }
+  };
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
@@ -22,6 +63,15 @@ const Header: React.FC = () => {
 
         <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0">
           <CurrencySelector />
+          {showInstallButton && ( // Conditionally render the install button
+            <button
+              onClick={handleInstallClick}
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Install app"
+            >
+              <Download className="h-5 w-5 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white" />
+            </button>
+          )}
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
