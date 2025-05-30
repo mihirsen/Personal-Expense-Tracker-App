@@ -69,11 +69,9 @@ const AuthPage: React.FC = () => {
           </div>
         )}
 
-        {isConfirmationSent ? (
-          <div className="text-center text-green-600 dark:text-green-400">
-            A confirmation email has been sent. Please check your inbox.
-          </div>
-        ) : (
+        {/* Conditional rendering based on isLogin and isConfirmationSent */}
+        {isLogin ? (
+          // Show Login Form
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -104,7 +102,49 @@ const AuthPage: React.FC = () => {
               className="btn btn-primary w-full"
               disabled={loading}
             >
-              {loading ? "Please wait..." : isLogin ? "Login" : "Sign Up"}
+              {loading ? "Please wait..." : "Login"}{" "}
+              {/* Button text is always Login here */}
+            </button>
+          </form>
+        ) : isConfirmationSent ? (
+          // Show Confirmation Message
+          <div className="text-center text-green-600 dark:text-green-400">
+            A confirmation email has been sent. Please check your inbox.
+          </div>
+        ) : (
+          // Show Signup Form
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                className="input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                className="input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={loading}
+            >
+              {loading ? "Please wait..." : "Sign Up"}{" "}
+              {/* Button text is always Sign Up here */}
             </button>
           </form>
         )}
